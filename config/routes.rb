@@ -15,4 +15,10 @@ get("/square_root/results", { :controller => "calculations", :action => "square_
 get("/payment/results", { :controller => "calculations", :action => "payment"})
 get("/random/results", { :controller => "calculations", :action => "random"})
 
+get("/word_count/new", { :controller => "calculations", :action => "word_count_form"})
+get("/descriptive_stats/new", { :controller => "calculations", :action => "descriptive_stats_form"})
+
+get("/word_count/results", { :controller => "calculations", :action => "word_count"})
+get("/descriptive_stats/results", { :controller => "calculations", :action => "descriptive_stats"})
+
 end

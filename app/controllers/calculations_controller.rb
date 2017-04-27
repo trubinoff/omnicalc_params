@@ -24,6 +24,7 @@ class CalculationsController < ApplicationController
     step3 = 1-step2
 
     @monthly_payment = step1/step3
+    
     render{"calculations/payment.html.erb"}
   end
 
@@ -87,6 +88,78 @@ class CalculationsController < ApplicationController
     @maximum_num = params[:num2].to_f
     @random_num = rand(@minimum_num..@maximum_num).round(0)
     render{"calculations/flex_random.html.erb"}
+  end
+
+  def word_count
+    @text = params[:user_text]
+    @special_word = params[:user_word]
+
+    @text_split_into_array = @text.split
+    @word_count = @text_split_into_array.length
+
+    @character_count_with_spaces = @text.chars.length
+
+    @character_count_without_spaces = @text.gsub(" ","").gsub("\n","").gsub("\t","").gsub("\r","").length
+
+    text_array = @text.gsub(/[^a-z0-9\s]/i, "").downcase.split
+    @occurrences = 0
+    text_array.each do |word|
+      if word == @special_word.downcase
+        @occurrences += 1
+      end
+
+      render{"calculations/word_count.html.erb"}
+
+    end
+
+    def word_count_form
+      render("calculations/word_count_form.html.erb")
+    end
+
+  end
+
+  def descriptive_stats
+    @numbers = params[:list_of_numbers].gsub(',', '').split.map(&:to_f)
+    @sorted_numbers = @numbers.sort
+
+      @count = @numbers.count
+
+      @minimum = @numbers.min
+
+      @maximum = @numbers.max
+
+      @range = @maximum - @minimum
+
+      middle=@count/2
+      if @count.even?
+        median = (@sorted_numbers[middle]+ @sorted_numbers[middle-1])/2
+      else
+        median = @sorted_numbers[middle]
+      end
+
+      @median = median
+
+      @sum = @numbers.inject(0){|sum,x| sum + x }
+
+      @mean = @sum/@count
+
+      variance1 = @numbers.inject(0.0) {|s,x| s + (x - @mean)**2}
+      variance2 = variance1/@count
+
+      @variance = variance2
+
+      @standard_deviation = @variance**(1.0/2)
+
+      freq = @numbers.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
+      mode = @numbers.max_by { |v| freq[v] }
+      @mode = mode
+
+      render("calculation/descriptive_stats.html.erb")
+
+  end
+
+  def descriptive_stats_form
+    render("calculations/descriptive_stats_form.html.erb")
   end
 
 end
